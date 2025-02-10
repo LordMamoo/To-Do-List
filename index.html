@@ -11,18 +11,18 @@
 
     <body>
         <main class="outer">
-            <div id="navBar" class="col-12 p-2 d-flex align-items-center justify-content-between bg-primary text-light h-10">
-                <h1 class="fs-4">Listify</h1>
-                <nav id="navRight">
-                    <a href="index.html" class="text-decoration-none text-light">Home</a>
-                    <a href="index.html" class="text-decoration-none text-light">Calander</a>
-                    <!-- <a href="index.html" class="text-decoration-none text-light">Third Thing</a> -->
-                </nav>
-            </div>
-           
-            <div id="batmain" class="container-fluid h-90">
-                <div class="row">
-                    <div id="side" class="col-3 bg-success">
+            <div id="batmain" class="container-fluid d-flex flex-column h-100">
+                <div class="row d-flex align-items-center p-1 bg-primary">
+                    <h1 class="col-6 fs-4">Listify</h1>
+                    <nav id="navRight" class="col-6 text-end">
+                        <a href="index.html" class="col-6 text-decoration-none text-light">Home</a>
+                        <a href="index.html" class="text-decoration-none text-light">Calander</a>
+                        <!-- <a href="index.html" class="text-decoration-none text-light">Third Thing</a> -->
+                    </nav>
+
+                </div>
+                <div class="row flex-grow-1">
+                    <div id="side" class="col-3 bg-secondary">
                         <h3>To Do</h3>
                         <input type="text" id="ToDo" placeholder="Enter List Name">
                         <ul>
@@ -34,7 +34,7 @@
                         </ul>
                     </div>
            
-                    <div class="col-9 bg-success">
+                    <div class="col-9 bg-secondary-subtle">
                         <h3>Li1</h3>
                         <input type="text" placeholder="+">
                     </div>
