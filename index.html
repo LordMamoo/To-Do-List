@@ -12,31 +12,32 @@
     <body>
         <main class="outer">
             <div id="batmain" class="container-fluid d-flex flex-column h-100">
-                <div class="row d-flex align-items-center p-1 bg-primary">
+                <div class="row d-flex align-items-center p-3 bg-primary">
                     <h1 class="col-6 fs-4">Listify</h1>
                     <nav id="navRight" class="col-6 text-end">
                         <a href="index.html" class="col-6 text-decoration-none text-light">Home</a>
-                        <a href="index.html" class="text-decoration-none text-light">Calander</a>
+                        <a href="index.html" class="text-decoration-none text-white">Calander</a>
                         <!-- <a href="index.html" class="text-decoration-none text-light">Third Thing</a> -->
                     </nav>
 
                 </div>
                 <div class="row flex-grow-1">
-                    <div id="side" class="col-3 bg-secondary">
+                    <div id="side" class="col-3 p-2 bg-success">
                         <h3>To Do</h3>
-                        <input type="text" id="ToDo" placeholder="Enter List Name">
-                        <ul>
-                            <li>li1</li>
-                            <li>li2</li>
-                            <li>li3</li>
-                            <li>li4</li>
-                            <li>li5</li>
+                        <input class="w-100" type="text" id="ToDo" placeholder="Enter List Name">
+                        <ul class="list-group pt-2">
+                            <li class="list-group-item active">li1</li>
+                            <li class="list-group-item">li2</li>
+                            <li class="list-group-item">li3</li>
+                            <li class="list-group-item">li4</li>
+                            <li class="list-group-item">li5</li>
                         </ul>
                     </div>
            
-                    <div class="col-9 bg-secondary-subtle">
+                    <div class="col-9 p-2 bg-secondary-subtle">
                         <h3>Li1</h3>
-                        <input type="text" placeholder="+">
+                        <input type="text">
+                        <button>+</button>
                     </div>
                 </div>
             </div>
