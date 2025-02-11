@@ -6,10 +6,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/style.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="script.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
     </head>
 
-    <body>
+    <body onload="render()">
         <main class="outer">
             <div id="batmain" class="container-fluid d-flex flex-column h-100">
                 <div class="row d-flex align-items-center p-3 bg-primary">
@@ -20,24 +21,24 @@
                         <!-- <a href="index.html" class="text-decoration-none text-light">Third Thing</a> -->
                     </nav>
                 </div>
-                
+
                 <div class="row flex-grow-1">
                     <div id="side" class="col-3 p-2 bg-success">
-                        <h3>To Do</h3>
+                        <h3>Lists</h3>
                         <input class="w-100" type="text" id="ToDo" placeholder="Enter List Name">
-                        <ul class="list-group pt-2">
-                            <li class="list-group-item active">li1</li>
-                            <li class="list-group-item">li2</li>
-                            <li class="list-group-item">li3</li>
-                            <li class="list-group-item">li4</li>
-                            <li class="list-group-item">li5</li>
+                        <ul id="lists" class="list-group pt-2">
                         </ul>
                     </div>
            
-                    <div class="col-9 p-2 bg-secondary-subtle">
-                        <h3>Li1</h3>
-                        <input type="text">
-                        <button>+</button>
+                    <div class="col-9 d-flex flex-column justify-content-between p-2 h-100 bg-secondary-subtle">
+                        <div>
+                            <h3 id="current-list-name"></h3>
+                            <ul class="list-group" id="current-list-todos"></ul>
+                        </div>
+                        <div>
+                            <input type="text" id="todo-input-box" placeholder="Add To Do">
+                            <button onclick="addTodo()">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
