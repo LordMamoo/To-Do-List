@@ -78,28 +78,35 @@ function render() {
     }
 }
 
-// function addList() {
-
-// }
+function addList() {
+  const text = document.getElementById('list-input-box').value;
+  lists[2] = {
+    name: text,
+    todos: []
+  };
+  render();
+}
 
 // function removeList() {
 
 // }
 
 function addTodo() {
-    // get the todo text from the todo input box
-    const text = document.getElementById('todo-input-box').value;
-    if(text) {
-        currentList.todos.push({
-            text: text,
-            completed: false
-        })
-        render();
-    }
+  const text = document.getElementById('todo-add-box').value;
+  if(text) {
+    currentList.todos.push({
+      text: text,
+      completed: false
+    })
+    render();
+  }
 }
 
 // function removeTodo() {
-
+//   const text = document.getElementById('todo-remove-box').value;
+//   const rm = indexOf(text);
+//   delete currentList[rm]
+//   render();
 // }
 
 // function markTodoAsCompleted() {
