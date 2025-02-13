@@ -1,31 +1,31 @@
 const lists = {
-    1: {
-      name: "Shopping list",
-      todos: [
-        {
-          text: 'bananas',
-          completed: false
-        },
-        {
-          text: '1 lbs ground turkey',
-          completed: false
-        }
-      ]
-    },
+  1: {
+    name: "Shopping list",
+    todos: [
+      {
+        text: 'Bananas',
+        completed: false
+      },
+      {
+        text: '1 lbs ground turkey',
+        completed: false
+      }
+    ]
+  },
 
-    2: {
-        name: "Video Games",
-        todos: [
-            {
-                text: 'Elden Ring',
-                completed: false
-            },
-            {
-                text: 'Halo',
-                completed: true
-            }
-        ]
-    }
+  2: {
+    name: "Video Games",
+    todos: [
+      {
+        text: 'Elden Ring',
+        completed: false
+      },
+      {
+        text: 'Halo',
+        completed: true
+      }
+    ]
+  },
 }
 const currentList = lists[1];
 
@@ -55,27 +55,31 @@ const currentList = lists[1];
 //    }
 
 function render() {
-    // Render lists
-    let listsHtml = '<ul class="list-group">';
-    for (const key in lists) {
-        const list = lists[key];
-        listsHtml += `<li class="list-group-item">${list.name}</li>`;
-    }
-    listsHtml += '</ul>';
-    document.getElementById('lists').innerHTML = listsHtml;
+  // Render lists
+  let listsHtml = '<ul class="list-group">';
+  for (const key in lists) {
+    const list = lists[key];
+    listsHtml += `<li class="list-group-item">${list.name}</li>`;
+  }
+  listsHtml += '</ul>';
+  document.getElementById('lists').innerHTML = listsHtml;
 
-    // Render current list name and todos
-    if (currentList) {
-        document.getElementById('current-list-name').innerText = currentList.name;
+  // Render current list name and todos
+  if (currentList) {
+    document.getElementById('current-list-name').innerText = currentList.name;
 
-        let todosHtml = '<ul class="list-group-flush">';
-        currentList.todos.forEach((todo) => {
-            const completedClass = todo.completed ? 'completed' : '';
-            todosHtml += `<li class="list-group-item ${completedClass}">${todo.text}</li>`;
-        });
-        todosHtml += '</ul>';
-        document.getElementById('current-list-todos').innerHTML = todosHtml;
-    }
+    let todosHtml = '<ul class="list-group-flush">';
+    currentList.todos.forEach((todo) => {
+      const completedClass = todo.completed ? 'completed' : '';
+      todosHtml += `<li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${completedClass}">
+                    <div>
+                      <input type="checkbox" onclick="markTodoAsCompleted()"> ${todo.text}
+                    </div>
+                    <button class="rounded-2" onclick="removeTodo()">-</button></li>`;
+    });
+    todosHtml += '</ul>';
+    document.getElementById('current-list-todos').innerHTML = todosHtml;
+  }
 }
 
 function addList() {
@@ -87,9 +91,10 @@ function addList() {
   render();
 }
 
-// function removeList() {
-
-// }
+function removeList() {
+  lists.splice(2, 1);
+  render()
+}
 
 function addTodo() {
   const text = document.getElementById('todo-add-box').value;
@@ -102,16 +107,23 @@ function addTodo() {
   }
 }
 
-// function removeTodo() {
-//   const text = document.getElementById('todo-remove-box').value;
-//   const rm = indexOf(text);
-//   delete currentList[rm]
-//   render();
-// }
+function removeTodo() {
+  const text = document.getElementById('todo-remove-box').value;
+  const rm = indexOf(text);
+  delete currentList[rm]
+  render();
+}
 
-// function markTodoAsCompleted() {
-
-// }
+function markTodoAsCompleted() {
+  const text = document.getElementById('todo-add-box').value;
+  if(text) {
+    let index = lists[1].todos.findIndex(todo => todo.text === text);
+    if (index !== -1) {
+      lists[1].todos[index].completed = true;
+    }
+    render();
+  }
+}
 
 // function removeAllTodosCompleted() {
 
