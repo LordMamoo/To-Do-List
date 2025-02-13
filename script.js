@@ -13,19 +13,19 @@ const lists = {
       ]
     },
 
-    // 2: {
-    //     name: "Video Games",
-    //     todos: [
-    //         {
-    //             text: 'Elden Ring',
-    //             completed: false
-    //         },
-    //         {
-    //             text: 'Halo',
-    //             completed: true
-    //         }
-    //     ]
-    // }
+    2: {
+        name: "Video Games",
+        todos: [
+            {
+                text: 'Elden Ring',
+                completed: false
+            },
+            {
+                text: 'Halo',
+                completed: true
+            }
+        ]
+    }
 }
 const currentList = lists[1];
 
@@ -80,7 +80,7 @@ function render() {
 
 function addList() {
   const text = document.getElementById('list-input-box').value;
-  lists[2] = {
+  lists[lists.length + 1] = {
     name: text,
     todos: []
   };
