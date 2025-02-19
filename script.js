@@ -1,81 +1,81 @@
-const lists = {
-  1: {
-    name: "Shopping list",
-    todos: [
-      {
-        text: 'Bananas',
-        completed: false
-      },
-      {
-        text: '1 lbs ground turkey',
-        completed: false
-      }
-    ]
-  },
+class ListManager {
+  constructor() {
+    this.lists = JSON.parse(localStorage.getItem('lists')) || {};
+    this.activeListId = null;
+  }
 
-  2: {
-    name: "Video Games",
-    todos: [
-      {
-        text: 'Elden Ring',
-        completed: false
-      },
-      {
-        text: 'Halo',
-        completed: true
-      }
-    ]
-  },
+  addList(name) {
+    if (!name.trim()) return;
+
+    const newListId = Date.now().toString();
+    this.lists[newListId] = { name, todos: [] };
+
+    this.saveToLocalStorage();
+    this.activeListId = newListId;
+  }
+
+  removeList(listId) {
+    delete this.lists[listId];
+    this.saveToLocalStorage();
+  }
+
+  addTodo(text) {
+    if (!this.activeListId || !text.trim()) return;
+
+    this.lists[this.activeListId].todos.push({text, completed:false});
+  }
+
+  removeTodo(index) {
+    if (!this.activeListId) return;
+
+    this.lists[this.activeListId].todos.splice(index, 1);
+    this.saveToLocalStorage();
+  }
+
+  toggleTodo(index) {
+    if (!this.activeListId) return;
+
+    const todo = this.lists[this.activeListId].todos[index];
+    if (todo) todo.completed = !todo.completed;
+
+    this.saveToLocalStorage();
+  }
+
+  setActiveList(listId) {
+    if (this.lists[listId]) this.activeListId = listId;
+  }
+
+  saveToLocalStorage() {
+    localStorage.setItem("lists", JSON.stringify(this.lists));
+  }
 }
-const currentList = lists[1];
 
-// function render() {
-//     // this will hold the html that will be displayed in the sidebar
-//     let listsHtml = '<ul class="list-group">';
-//     // iterate through the lists to get their names
-//     lists.forEach((list) => {
-//       listsHtml += `<li class="list-group-item">${list.name}</li>`;
-//     });
-   
-//     listsHtml += '</ul>';
-//     // print out the lists
-   
-//     document.getElementById('lists').innerHTML = listsHtml;
-//     // print out the name of the current list
-   
-//     document.getElementById('current-list-name').innerText = currentList.name;
-//     // iterate over the todos in the current list
-   
-//     let todosHtml = '<ul class="list-group-flush">';
-//     currentList.todos.forEach((list) => {
-//       todosHtml += `<li class="list-group-item">${todo.text}</li>`;
-//     });
-//     // print out the todos
-//     document.getElementById('current-list-todos').innerHTML = todosHtml;
-//    }
+const listManager = new ListManager();
 
 function render() {
-  // Render lists
+  const lists = listManager.lists;
+
   let listsHtml = '<ul class="list-group">';
   for (const key in lists) {
     const list = lists[key];
-    listsHtml += `<li class="list-group-item">${list.name}</li>`;
+    listsHtml += `<button onclick="setActiveList(${key})"><li class="list-group-item">${list.name}</li></button>`;
   }
   listsHtml += '</ul>';
   document.getElementById('lists').innerHTML = listsHtml;
 
   // Render current list name and todos
-  if (currentList) {
-    document.getElementById('current-list-name').innerText = currentList.name;
+  const activeList = listManager.lists[listManager.activeListId];
+  if (activeList) {
+    document.getElementById('current-list-name').innerText = activeList.name;
 
     let todosHtml = '<ul class="list-group-flush">';
-    currentList.todos.forEach((todo) => {
+    activeList.todos.forEach((todo, index) => {
       const completedClass = todo.completed ? 'completed' : '';
       todosHtml += `<li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${completedClass}">
                     <div>
-                      <input type="checkbox" onclick="markTodoAsCompleted()"> ${todo.text}
+                      <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="markTodoAsCompleted(${index})"> ${todo.text}
                     </div>
-                    <button class="rounded-2" onclick="removeTodo()">-</button></li>`;
+                    <button class="rounded-2" onclick="removeTodo(${index})">-</button></li>`;
     });
     todosHtml += '</ul>';
     document.getElementById('current-list-todos').innerHTML = todosHtml;
@@ -83,48 +83,76 @@ function render() {
 }
 
 function addList() {
-  const text = document.getElementById('list-input-box').value;
-  lists[lists.length + 1] = {
-    name: text,
-    todos: []
-  };
-  render();
-}
+  const listName = document.getElementById('list-input-box').value;
 
-function removeList() {
-  lists.splice(2, 1);
+  listManager.addList(listName);
+
+  document.getElementById("list-inut-box").value = "";
   render()
 }
 
-function addTodo() {
-  const text = document.getElementById('todo-add-box').value;
-  if(text) {
-    currentList.todos.push({
-      text: text,
-      completed: false
-    })
-    render();
-  }
+function removeList() {
 }
 
-function removeTodo() {
-  const text = document.getElementById('todo-remove-box').value;
-  const rm = indexOf(text);
-  delete currentList[rm]
+function setActiveList(listId) {
+  listManager.setActiveList(listId);
   render();
 }
 
-function markTodoAsCompleted() {
-  const text = document.getElementById('todo-add-box').value;
-  if(text) {
-    let index = lists[1].todos.findIndex(todo => todo.text === text);
-    if (index !== -1) {
-      lists[1].todos[index].completed = true;
-    }
-    render();
-  }
-}
+// function loadActiveList() {
+// //   const savedListId = localStorage.getItem("activeListId");
 
-// function removeAllTodosCompleted() {
+// //   if (savedListId && lists[savedListId]) {
+// //     activeListId = savedListId;
+// //     currentList = lists[savedListId];
+// //   } else {
+// //     activeListId = Object.keys(lists)[0];
+// //     currentList = lists[activeListId];
+// //   }
 
+// //   render();
+// // }
+
+// // loadActiveList();
+
+// function addTodo() {
+//   const text = document.getElementById('todo-add-box').value;
+//   if(text) {
+//     currentList.todos.push({
+//       text: text,
+//       completed: false
+//     })
+//     render();
+//   }
 // }
+
+// function removeTodo() {
+//   const text = document.getElementById('todo-remove-box').value;
+//   const rm = indexOf(text);
+//   delete currentList[rm]
+//   render();
+// }
+
+// function markTodoAsCompleted() {
+//   if (activeListId && lists[activeListId]) {
+//     lists[activeListId].todos[index].completed = !lists[activeListId].todos[index].completed; // Toggle completion
+
+//     saveToLocalStorage(); // Save to localStorage
+//     render(); // Re-render UI
+//   }
+// }
+
+// // function removeAllTodosCompleted() {
+
+// // }
+
+// function saveToLocalStorage() {
+//   localStorage.setItem("lists", JSON.stringify(lists));
+// }
+
+// function loadListsFromLocalStorage() {
+//   const savedLists = localStorage.getItem("lists");
+//   lists = savedLists ? JSON.parse(savedLists) : {}; // Convert back to object or start fresh
+// }
+
+loadListsFromLocalStorage();
