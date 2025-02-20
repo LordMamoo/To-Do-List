@@ -36,11 +36,12 @@ class ListManager {
     render();
   }
 
-  deleteTodo() {
+  removeTodo(index) {
+    if (!this.activeListId) return;
 
-    this.saveToLocalStorage();
-
-    render();
+    this.lists[this.activeListId].todos.splice(index, 1); // Remove the todo
+    this.saveToLocalStorage(); // Save changes
+    render(); // Update UI
   }
 
   toggleTodo(index) {
@@ -90,15 +91,15 @@ const listManager = new ListManager();
 function render() {
   const lists = listManager.lists;
 
-  let listsHtml = '<ul class="list-group">';
+  let listsHtml = '<ul class="list-group d-flex">';
   for (const key in lists) {
     const list = lists[key];
-    listsHtml += `<div><button onclick="listManager.setActiveList('${key}')"><li class="list-group-item d-flex">${list.name}</li></button><button class="w-25" onclick="deleteList()">-</button></div>`;
+    listsHtml += `<li class="list-group-item d-flex w-75" onclick="listManager.setActiveList('${key}')">${list.name}</li><button class="w-25" onclick="deleteList()">-</button>`;
   }
   listsHtml += '</ul>';
   document.getElementById('lists').innerHTML = listsHtml;
 
-  if (!listManager.activeListId) return; // Ensure there's an active list
+  if (!listManager.activeListId) return;
 
   const currentList = listManager.lists[listManager.activeListId];
   document.getElementById('current-list-name').innerText = currentList.name;
@@ -107,8 +108,9 @@ function render() {
   let completedTodosHtml = '<ul class="list-group">';
 
   currentList.todos.forEach((todo, index) => {
+      const completedClass = todo.completed ? 'completed' : '';
       const todoHtml = `
-          <li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${todo.completed ? 'completed' : ''}">
+          <li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${completedClass}">
               <div>
                   <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="listManager.toggleTodo(${index})"> 
                   ${todo.text}
@@ -117,16 +119,16 @@ function render() {
           </li>`;
 
       if (todo.completed) {
-          completedTodosHtml += todoHtml; // Move completed todos here
+          completedTodosHtml += todoHtml; // Add to completed section
       } else {
-          incompleteTodosHtml += todoHtml; // Keep incomplete todos here
+          incompleteTodosHtml += todoHtml; // Add to incomplete section
       }
   });
 
   incompleteTodosHtml += '</ul>';
   completedTodosHtml += '</ul>';
 
-  // Render the lists separately
+  // Update UI
   document.getElementById('current-list-todos').innerHTML = incompleteTodosHtml;
   document.getElementById('completed-todos').innerHTML = completedTodosHtml;
 }
