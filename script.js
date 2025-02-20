@@ -4,6 +4,16 @@ class ListManager {
     this.activeListId = null;
   }
 
+  setActiveList(listId) {
+    if (this.lists[listId]) {
+      this.activeListId = listId;
+      this.saveToLocalStorage();
+      localStorage.setItem("activeListId", listId);
+
+      render();
+    }
+  }
+
   addList(name) {
     if (!name.trim()) return;
 
@@ -19,11 +29,18 @@ class ListManager {
   }
 
   deleteList(listId) {
+    if (!this.lists[listId]) return;
+
     delete this.lists[listId];
     this.saveToLocalStorage();
 
+    if (this.activeListId === listId) {
+        this.activeListId = null;
+    }
+
     render();
   }
+
 
   addTodo(text) {
     if (!this.activeListId || !text.trim()) return;
@@ -39,9 +56,9 @@ class ListManager {
   removeTodo(index) {
     if (!this.activeListId) return;
 
-    this.lists[this.activeListId].todos.splice(index, 1); // Remove the todo
-    this.saveToLocalStorage(); // Save changes
-    render(); // Update UI
+    this.lists[this.activeListId].todos.splice(index, 1);
+    this.saveToLocalStorage();
+    render();
   }
 
   toggleTodo(index) {
@@ -52,16 +69,6 @@ class ListManager {
         todo.completed = !todo.completed;
         this.saveToLocalStorage();
         render();
-    }
-}
-
-  setActiveList(listId) {
-    if (this.lists[listId]) {
-      this.activeListId = listId;
-      this.saveToLocalStorage();
-      localStorage.setItem("activeListId", listId);
-
-      render();
     }
   }
 
@@ -83,18 +90,20 @@ class ListManager {
     }
 
     render();
-}
+  }
 }
 
 const listManager = new ListManager();
 
 function render() {
-  const lists = listManager.lists;
-
-  let listsHtml = '<ul class="list-group d-flex">';
-  for (const key in lists) {
-    const list = lists[key];
-    listsHtml += `<li class="list-group-item d-flex w-75" onclick="listManager.setActiveList('${key}')">${list.name}</li><button class="w-25" onclick="deleteList()">-</button>`;
+  let listsHtml = '<ul class="list-group">';
+  for (const key in listManager.lists) {
+      const list = listManager.lists[key];
+      listsHtml += `
+          <li class="list-group-item d-flex justify-content-between">
+              <button onclick="listManager.setActiveList('${key}')">${list.name}</button>
+              <button class="btn btn-danger btn-sm" onclick="listManager.deleteList('${key}')">🗑</button>
+          </li>`;
   }
   listsHtml += '</ul>';
   document.getElementById('lists').innerHTML = listsHtml;
