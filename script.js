@@ -12,24 +12,28 @@ class ListManager {
 
     this.saveToLocalStorage();
     this.activeListId = newListId;
+
+    
+    document.getElementById("list-input-box").value = "";
+    render();
   }
 
-  removeList(listId) {
+  deleteList(listId) {
     delete this.lists[listId];
     this.saveToLocalStorage();
+
+    render();
   }
 
   addTodo(text) {
     if (!this.activeListId || !text.trim()) return;
 
     this.lists[this.activeListId].todos.push({text, completed:false});
-  }
 
-  removeTodo(index) {
-    if (!this.activeListId) return;
-
-    this.lists[this.activeListId].todos.splice(index, 1);
     this.saveToLocalStorage();
+
+    document.getElementById("todo-add-box").value = "";
+    render();
   }
 
   toggleTodo(index) {
@@ -43,6 +47,8 @@ class ListManager {
 
   setActiveList(listId) {
     if (this.lists[listId]) this.activeListId = listId;
+
+    render();
   }
 
   saveToLocalStorage() {
@@ -58,7 +64,7 @@ function render() {
   let listsHtml = '<ul class="list-group">';
   for (const key in lists) {
     const list = lists[key];
-    listsHtml += `<button onclick="setActiveList(${key})"><li class="list-group-item">${list.name}</li></button>`;
+    listsHtml += `<div><button onclick="listManager.setActiveList('${key}')"><li class="list-group-item d-flex">${list.name}</li></button><button class="w-25" onclick="deleteList()">-</button></div>`;
   }
   listsHtml += '</ul>';
   document.getElementById('lists').innerHTML = listsHtml;
@@ -81,78 +87,3 @@ function render() {
     document.getElementById('current-list-todos').innerHTML = todosHtml;
   }
 }
-
-function addList() {
-  const listName = document.getElementById('list-input-box').value;
-
-  listManager.addList(listName);
-
-  document.getElementById("list-inut-box").value = "";
-  render()
-}
-
-function removeList() {
-}
-
-function setActiveList(listId) {
-  listManager.setActiveList(listId);
-  render();
-}
-
-// function loadActiveList() {
-// //   const savedListId = localStorage.getItem("activeListId");
-
-// //   if (savedListId && lists[savedListId]) {
-// //     activeListId = savedListId;
-// //     currentList = lists[savedListId];
-// //   } else {
-// //     activeListId = Object.keys(lists)[0];
-// //     currentList = lists[activeListId];
-// //   }
-
-// //   render();
-// // }
-
-// // loadActiveList();
-
-// function addTodo() {
-//   const text = document.getElementById('todo-add-box').value;
-//   if(text) {
-//     currentList.todos.push({
-//       text: text,
-//       completed: false
-//     })
-//     render();
-//   }
-// }
-
-// function removeTodo() {
-//   const text = document.getElementById('todo-remove-box').value;
-//   const rm = indexOf(text);
-//   delete currentList[rm]
-//   render();
-// }
-
-// function markTodoAsCompleted() {
-//   if (activeListId && lists[activeListId]) {
-//     lists[activeListId].todos[index].completed = !lists[activeListId].todos[index].completed; // Toggle completion
-
-//     saveToLocalStorage(); // Save to localStorage
-//     render(); // Re-render UI
-//   }
-// }
-
-// // function removeAllTodosCompleted() {
-
-// // }
-
-// function saveToLocalStorage() {
-//   localStorage.setItem("lists", JSON.stringify(lists));
-// }
-
-// function loadListsFromLocalStorage() {
-//   const savedLists = localStorage.getItem("lists");
-//   lists = savedLists ? JSON.parse(savedLists) : {}; // Convert back to object or start fresh
-// }
-
-loadListsFromLocalStorage();

@@ -29,8 +29,7 @@
                             <h3>Lists</h3>
                             <div class="d-flex">
                                 <input class="h-50 rounded-2" id="list-input-box" type="text" placeholder="New List">
-                                <button class="rounded-2" onclick="addList()">+</button>
-                                <button class="rounded-2" onclick="removeList()">-</button>
+                                <button class="rounded-2" onclick="listManager.addList(document.getElementById('list-input-box').value)">+</button>
                             </div>
                         </div>
                         <input class="w-100 mt-1 rounded-2" type="text" id="ToDo" placeholder="Enter List Name">
@@ -44,7 +43,7 @@
                                     <h3 id="current-list-name"></h3>
                                     <div>
                                         <input class="rounded-2" id="todo-add-box" type="text" placeholder="Add To Do">
-                                        <button class="rounded-2" onclick="addTodo()">+</button>
+                                        <button class="rounded-2" onclick="listManager.addTodo(document.getElementById('todo-add-box').value)">+</button>
                                     </div>
                                 </div>
                                 <div>
