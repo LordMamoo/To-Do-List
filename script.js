@@ -98,22 +98,35 @@ function render() {
   listsHtml += '</ul>';
   document.getElementById('lists').innerHTML = listsHtml;
 
-  // Render current list name and todos
-  const activeList = listManager.lists[listManager.activeListId];
-  if (activeList) {
-    document.getElementById('current-list-name').innerText = activeList.name;
+  if (!listManager.activeListId) return; // Ensure there's an active list
 
-    let todosHtml = '<ul class="list-group-flush">';
-    activeList.todos.forEach((todo, index) => {
-      const completedClass = todo.completed ? 'completed' : '';
-      todosHtml += `<li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${completedClass}">
-                    <div>
-                      <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="listManager.toggleTodo(${index})"> 
-                      ${todo.text}
-                    </div>
-                    <button class="rounded-2" onclick="listManager.deleteTodo(${index})">-</button></li>`;
-    });
-    todosHtml += '</ul>';
-    document.getElementById('current-list-todos').innerHTML = todosHtml;
-  }
+  const currentList = listManager.lists[listManager.activeListId];
+  document.getElementById('current-list-name').innerText = currentList.name;
+
+  let incompleteTodosHtml = '<ul class="list-group">';
+  let completedTodosHtml = '<ul class="list-group">';
+
+  currentList.todos.forEach((todo, index) => {
+      const todoHtml = `
+          <li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${todo.completed ? 'completed' : ''}">
+              <div>
+                  <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="listManager.toggleTodo(${index})"> 
+                  ${todo.text}
+              </div>
+              <button class="rounded-2" onclick="listManager.removeTodo(${index})">-</button>
+          </li>`;
+
+      if (todo.completed) {
+          completedTodosHtml += todoHtml; // Move completed todos here
+      } else {
+          incompleteTodosHtml += todoHtml; // Keep incomplete todos here
+      }
+  });
+
+  incompleteTodosHtml += '</ul>';
+  completedTodosHtml += '</ul>';
+
+  // Render the lists separately
+  document.getElementById('current-list-todos').innerHTML = incompleteTodosHtml;
+  document.getElementById('completed-todos').innerHTML = completedTodosHtml;
 }

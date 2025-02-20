@@ -45,16 +45,14 @@
                                         <button class="rounded-2" onclick="listManager.addTodo(document.getElementById('todo-add-box').value)">+</button>
                                     </div>
                                 </div>
-                                <div>
-                                    <ul class="list-group" id="current-list-todos"></ul>
-                                </div>
+                                <div id="current-list-todos"></div>
                             </div>
                             <div class="h-25">
                                 <div class="d-flex align-items-center">
                                     <h4>Completed</h4>
                                     <button class="rounded-2" onclick="removeAllTodosCompleted()"><span class="material-symbols-outlined">delete</span></button>
                                 </div>
-                                <ul class="list-group" id="completed-list-todos"></ul>
+                                <div id="completed-todos"></div>
                             </div>
                         </div>
                     </div>
