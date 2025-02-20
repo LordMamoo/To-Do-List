@@ -36,24 +36,53 @@ class ListManager {
     render();
   }
 
-  toggleTodo(index) {
-    if (!this.activeListId) return;
-
-    const todo = this.lists[this.activeListId].todos[index];
-    if (todo) todo.completed = !todo.completed;
+  deleteTodo() {
 
     this.saveToLocalStorage();
-  }
-
-  setActiveList(listId) {
-    if (this.lists[listId]) this.activeListId = listId;
 
     render();
   }
 
+  toggleTodo(index) {
+    if (!this.activeListId) return;
+
+    const todo = this.lists[this.activeListId].todos[index];
+    if (todo) {
+        todo.completed = !todo.completed;
+        this.saveToLocalStorage();
+        render();
+    }
+}
+
+  setActiveList(listId) {
+    if (this.lists[listId]) {
+      this.activeListId = listId;
+      this.saveToLocalStorage();
+      localStorage.setItem("activeListId", listId);
+
+      render();
+    }
+  }
+
   saveToLocalStorage() {
     localStorage.setItem("lists", JSON.stringify(this.lists));
+    localStorage.setItem("activeListId", this.activeListId);
   }
+
+  loadFromLocalStorage() {
+    const storedLists = localStorage.getItem("lists");
+    const storedActiveListId = localStorage.getItem("activeListId");
+
+    if (storedLists) {
+        this.lists = JSON.parse(storedLists);
+    }
+
+    if (storedActiveListId && this.lists[storedActiveListId]) {
+        this.activeListId = storedActiveListId;
+    }
+
+    render();
+}
 }
 
 const listManager = new ListManager();
@@ -79,9 +108,10 @@ function render() {
       const completedClass = todo.completed ? 'completed' : '';
       todosHtml += `<li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${completedClass}">
                     <div>
-                      <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="markTodoAsCompleted(${index})"> ${todo.text}
+                      <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="listManager.toggleTodo(${index})"> 
+                      ${todo.text}
                     </div>
-                    <button class="rounded-2" onclick="removeTodo(${index})">-</button></li>`;
+                    <button class="rounded-2" onclick="listManager.deleteTodo(${index})">-</button></li>`;
     });
     todosHtml += '</ul>';
     document.getElementById('current-list-todos').innerHTML = todosHtml;

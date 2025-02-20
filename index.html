@@ -11,7 +11,7 @@
         <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
     </head>
 
-    <body onload="render()">
+    <body onload="listManager.loadFromLocalStorage()">
         <main class="outer">
             <div id="batmain" class="container-fluid d-flex flex-column h-100">
                 <div class="row d-flex align-items-center p-3 bg-primary">
@@ -19,7 +19,6 @@
                     <nav id="navRight" class="col-6 text-end">
                         <a href="index.html" class="text-decoration-none text-light">Home</a>
                         <a href="index.html" class="text-decoration-none text-white">Calander</a>
-                        <!-- <a href="index.html" class="text-decoration-none text-light">Third Thing</a> -->
                     </nav>
                 </div>
 
