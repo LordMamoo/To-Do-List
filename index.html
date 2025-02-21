@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="row flex-grow-1">
-                    <div id="side" class="col-3 p-2 bg-success">
+                    <div id="side" class="col-3 p-2 bg-success h-100">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3>Lists</h3>
                             <div class="d-flex">
@@ -37,7 +37,7 @@
            
                     <div class="col-9 d-flex flex-column justify-content-between p-2 h-100 bg-secondary-subtle">
                         <div class="d-flex flex-column justify-content-between h-100">
-                            <div>
+                            <div class="h-75">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h3 id="current-list-name"></h3>
                                     <div>
@@ -50,7 +50,7 @@
                             <div class="h-25">
                                 <div class="d-flex align-items-center">
                                     <h4>Completed</h4>
-                                    <button class="rounded-2" onclick="removeAllTodosCompleted()"><span class="material-symbols-outlined">delete</span></button>
+                                    <button class="rounded-2" onclick="listManager.deleteCompleted()"><span class="material-symbols-outlined">delete</span></button>
                                 </div>
                                 <div id="completed-todos"></div>
                             </div>

@@ -35,7 +35,7 @@ class ListManager {
     this.saveToLocalStorage();
 
     if (this.activeListId === listId) {
-        this.activeListId = null;
+      this.activeListId = null;
     }
 
     render();
@@ -61,14 +61,23 @@ class ListManager {
     render();
   }
 
+  deleteCompleted() {
+    if (!this.activeListId) return;
+
+
+    this.lists[this.activeListId].todos = this.lists[this.activeListId].todos.filter(todo => !todo.completed);
+    this.saveToLocalStorage();
+    render();
+  }
+
   toggleTodo(index) {
     if (!this.activeListId) return;
 
     const todo = this.lists[this.activeListId].todos[index];
     if (todo) {
-        todo.completed = !todo.completed;
-        this.saveToLocalStorage();
-        render();
+      todo.completed = !todo.completed;
+      this.saveToLocalStorage();
+      render();
     }
   }
 
@@ -82,11 +91,11 @@ class ListManager {
     const storedActiveListId = localStorage.getItem("activeListId");
 
     if (storedLists) {
-        this.lists = JSON.parse(storedLists);
+      this.lists = JSON.parse(storedLists);
     }
 
     if (storedActiveListId && this.lists[storedActiveListId]) {
-        this.activeListId = storedActiveListId;
+      this.activeListId = storedActiveListId;
     }
 
     render();
@@ -98,39 +107,46 @@ const listManager = new ListManager();
 function render() {
   let listsHtml = '<ul class="list-group">';
   for (const key in listManager.lists) {
-      const list = listManager.lists[key];
-      listsHtml += `
-          <li class="list-group-item d-flex justify-content-between">
-              <button onclick="listManager.setActiveList('${key}')">${list.name}</button>
-              <button class="btn btn-danger btn-sm" onclick="listManager.deleteList('${key}')">🗑</button>
-          </li>`;
+    const list = listManager.lists[key];
+    listsHtml += `
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <button class="btn" onclick="listManager.setActiveList('${key}')">${list.name}</button>
+        <button class="rounded-2 h-25" onclick="listManager.deleteList('${key}')">-</button>
+      </li>`;
   }
   listsHtml += '</ul>';
   document.getElementById('lists').innerHTML = listsHtml;
 
-  if (!listManager.activeListId) return;
+  let currentList = listManager.lists[listManager.activeListId];
 
-  const currentList = listManager.lists[listManager.activeListId];
-  document.getElementById('current-list-name').innerText = currentList.name;
+  if (currentList) {
+    document.getElementById('current-list-name').innerText = currentList.name;
+  } else {
+    document.getElementById('current-list-name').innerText = "";
+    document.getElementById('current-list-todos').innerHTML = "";
+    document.getElementById('completed-todos').innerHTML = "";
+    return; // Exit early if no active list
+  }
+  
 
   let incompleteTodosHtml = '<ul class="list-group">';
   let completedTodosHtml = '<ul class="list-group">';
 
   currentList.todos.forEach((todo, index) => {
-      const completedClass = todo.completed ? 'completed' : '';
-      const todoHtml = `
-          <li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${completedClass}">
-              <div>
-                  <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="listManager.toggleTodo(${index})"> 
-                  ${todo.text}
-              </div>
-              <button class="rounded-2" onclick="listManager.removeTodo(${index})">-</button>
-          </li>`;
+    const completedClass = todo.completed ? 'completed' : '';
+    const todoHtml = `
+      <li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${completedClass}">
+        <div>
+          <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="listManager.toggleTodo(${index})"> 
+          ${todo.text}
+        </div>
+        <button class="rounded-2" onclick="listManager.removeTodo(${index})">-</button>
+      </li>`;
 
       if (todo.completed) {
-          completedTodosHtml += todoHtml; // Add to completed section
+        completedTodosHtml += todoHtml; // Add to completed section
       } else {
-          incompleteTodosHtml += todoHtml; // Add to incomplete section
+        incompleteTodosHtml += todoHtml; // Add to incomplete section
       }
   });
 
