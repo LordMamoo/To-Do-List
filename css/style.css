@@ -2,29 +2,10 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 main {
+    max-height: 100%;
     height: 100%;
-}
-
-#lists {
-    max-height: 60%;
-    overflow-y: auto;
-}
-
-#current-list-todos {
-    max-height: 90%;
-    overflow-y: auto;
-}
-
-#completed-todos {
-    max-height: 80%;
-    overflow-y: auto;
-}
-
-.completed {
-    text-decoration: line-through;
-    color: gray;
 }
