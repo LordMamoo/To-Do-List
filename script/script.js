@@ -96,6 +96,8 @@ class ListManager {
 
     if (storedActiveListId && this.lists[storedActiveListId]) {
       this.activeListId = storedActiveListId;
+    } else {
+      this.activeListId = null; // Reset if invalid
     }
 
     render();
@@ -129,8 +131,8 @@ function render() {
   }
   
 
-  let incompleteTodosHtml = '<ul class="list-group">';
-  let completedTodosHtml = '<ul class="list-group">';
+  let incompleteTodosHtml = '<ul id="todo-list" class="list-group">';
+  let completedTodosHtml = '<ul id="todo-list" class="list-group">';
 
   currentList.todos.forEach((todo, index) => {
     const completedClass = todo.completed ? 'completed' : '';
@@ -156,4 +158,16 @@ function render() {
   // Update UI
   document.getElementById('current-list-todos').innerHTML = incompleteTodosHtml;
   document.getElementById('completed-todos').innerHTML = completedTodosHtml;
+}
+
+function enableDragAndDrop() {
+  new Sortable(document.getElementById('todo-list'), {
+    animation: 150,
+    onEnd: function (evt) {
+      const todos = listManager.lists[listManager.activeListId].todos;
+      const [movedItem] = todos.splice(evt.oldIndex, 1);
+      todos.splice(evt.newIndex, 0, movedItem);
+      listManager.saveToLocalStorage();
+    }
+  });
 }
