@@ -97,7 +97,7 @@ class ListManager {
     if (storedActiveListId && this.lists[storedActiveListId]) {
       this.activeListId = storedActiveListId;
     } else {
-      this.activeListId = null; // Reset if invalid
+      this.activeListId = null;
     }
 
     render();
@@ -127,7 +127,7 @@ function render() {
     document.getElementById('current-list-name').innerText = "";
     document.getElementById('current-list-todos').innerHTML = "";
     document.getElementById('completed-todos').innerHTML = "";
-    return; // Exit early if no active list
+    return;
   }
   
 
@@ -146,28 +146,15 @@ function render() {
       </li>`;
 
       if (todo.completed) {
-        completedTodosHtml += todoHtml; // Add to completed section
+        completedTodosHtml += todoHtml;
       } else {
-        incompleteTodosHtml += todoHtml; // Add to incomplete section
+        incompleteTodosHtml += todoHtml;
       }
   });
 
   incompleteTodosHtml += '</ul>';
   completedTodosHtml += '</ul>';
 
-  // Update UI
   document.getElementById('current-list-todos').innerHTML = incompleteTodosHtml;
   document.getElementById('completed-todos').innerHTML = completedTodosHtml;
-}
-
-function enableDragAndDrop() {
-  new Sortable(document.getElementById('todo-list'), {
-    animation: 150,
-    onEnd: function (evt) {
-      const todos = listManager.lists[listManager.activeListId].todos;
-      const [movedItem] = todos.splice(evt.oldIndex, 1);
-      todos.splice(evt.newIndex, 0, movedItem);
-      listManager.saveToLocalStorage();
-    }
-  });
 }
