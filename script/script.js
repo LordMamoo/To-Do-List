@@ -41,6 +41,18 @@ class ListManager {
     render();
   }
 
+  reorderLists(oldIndex, newIndex) {
+    if (oldIndex === newIndex) return;
+
+    const listEntries = Object.entries(this.lists);
+    const [movedItem] = listEntries.splice(oldIndex, 1);
+    listEntries.splice(newIndex, 0, movedItem);
+  this.lists = Object.fromEntries(listEntries);
+
+    this.saveToLocalStorage();
+
+    render();
+  }
 
   addTodo(text) {
     if (!this.activeListId || !text.trim()) return;
@@ -61,9 +73,20 @@ class ListManager {
     render();
   }
 
+  reorderTodos(oldIndex, newIndex) {
+    if (!this.activeListId || oldIndex === newIndex) return;
+
+    const updatedTodos = this.lists[this.activeListId].todos;
+    const [movedItem] = updatedTodos.splice(oldIndex, 1);
+    updatedTodos.splice(newIndex, 0, movedItem);
+
+    this.saveToLocalStorage();
+
+    render();
+  }
+
   deleteCompleted() {
     if (!this.activeListId) return;
-
 
     this.lists[this.activeListId].todos = this.lists[this.activeListId].todos.filter(todo => !todo.completed);
     this.saveToLocalStorage();
@@ -107,7 +130,7 @@ class ListManager {
 const listManager = new ListManager();
 
 function render() {
-  let listsHtml = '<ul class="list-group">';
+  let listsHtml = '<ul id="list" class="list-group">';
   for (const key in listManager.lists) {
     const list = listManager.lists[key];
     listsHtml += `
@@ -157,4 +180,20 @@ function render() {
 
   document.getElementById('current-list-todos').innerHTML = incompleteTodosHtml;
   document.getElementById('completed-todos').innerHTML = completedTodosHtml;
+
+  new Sortable(document.getElementById('list'), {
+    animation: 150,
+    ghostClass: "sortable-ghost",
+    onEnd: function(evt) {
+        listManager.reorderLists(evt.oldIndex, evt.newIndex);
+    }
+  })
+
+  new Sortable(document.getElementById('todo-list'), {
+    animation: 150,
+    ghostClass: "sortable-ghost",
+    onEnd: function(evt) {
+        listManager.reorderTodos(evt.oldIndex, evt.newIndex);
+    }
+  })
 }
