@@ -1,4 +1,4 @@
-class ListManager {
+class ListManager { // Creates and Manages To Do Lists for the user
   constructor() {
     this.lists = JSON.parse(localStorage.getItem('lists')) || {};
     this.activeListId = null;
@@ -14,7 +14,7 @@ class ListManager {
     }
   }
 
-  addList(name) {
+  addList(name) { // Adds a new list to the object
     if (!name.trim()) return;
 
     const newListId = Date.now().toString();
@@ -28,7 +28,7 @@ class ListManager {
     render();
   }
 
-  deleteList(listId) {
+  deleteList(listId) { // Deletes a specific list from the object
     if (!this.lists[listId]) return;
 
     delete this.lists[listId];
@@ -41,7 +41,7 @@ class ListManager {
     render();
   }
 
-  reorderLists(oldIndex, newIndex) {
+  reorderLists(oldIndex, newIndex) { // Allows the user to reorder to do lists
     if (oldIndex === newIndex) return;
 
     const listEntries = Object.entries(this.lists);
@@ -54,7 +54,7 @@ class ListManager {
     render();
   }
 
-  addTodo(text) {
+  addTodo(text) { // Adds a new todo task
     if (!this.activeListId || !text.trim()) return;
 
     this.lists[this.activeListId].todos.push({text, completed:false});
@@ -65,7 +65,7 @@ class ListManager {
     render();
   }
 
-  editTodo(index, newText) {
+  editTodo(index, newText) { // Edits the name of the task
     if (!this.activeListId || !newText.trim()) return;
 
     this.lists[this.activeListId].todos[index].text = newText.trim();
@@ -113,7 +113,7 @@ class ListManager {
     this.saveToLocalStorage();
   }
 
-  removeTodo(index) {
+  removeTodo(index) { // Deletes the task from the list
     if (!this.activeListId) return;
 
     this.lists[this.activeListId].todos.splice(index, 1);
@@ -133,7 +133,7 @@ class ListManager {
     render();
   }
 
-  deleteCompleted() {
+  deleteCompleted() { // Deletes all tasks labeled as completed
     if (!this.activeListId) return;
 
     this.lists[this.activeListId].todos = this.lists[this.activeListId].todos.filter(todo => !todo.completed);
@@ -141,7 +141,7 @@ class ListManager {
     render();
   }
 
-  toggleTodo(index) {
+  toggleTodo(index) { // Lets the user toggle if a task is complete or not
     if (!this.activeListId) return;
 
     const todo = this.lists[this.activeListId].todos[index];
@@ -153,12 +153,12 @@ class ListManager {
     }
   }
 
-  saveToLocalStorage() {
+  saveToLocalStorage() { // Saves the data to local storage
     localStorage.setItem("lists", JSON.stringify(this.lists));
     localStorage.setItem("activeListId", this.activeListId);
   }
 
-  loadFromLocalStorage() {
+  loadFromLocalStorage() { // Loads data from local storage when the page is opened
     const storedLists = localStorage.getItem("lists");
     const storedActiveListId = localStorage.getItem("activeListId");
 
@@ -178,7 +178,8 @@ class ListManager {
 
 const listManager = new ListManager();
 
-function render() {
+function render() { // Displays the data in the html
+  // Displays all lists for the user
   let listsHtml = '<ul id="list" class="list-group">';
   for (const key in listManager.lists) {
     const list = listManager.lists[key];
@@ -202,7 +203,7 @@ function render() {
     return;
   }
   
-
+  // Displays todo tasks
   let incompleteTodosHtml = '<ul id="todo-list" class="list-group">';
   let completedTodosHtml = '<ul id="todo-list" class="list-group">';
 
@@ -223,8 +224,8 @@ function render() {
       </div>
       <button class="btn" onclick="listManager.removeTodo(${index})"><span class="material-symbols-outlined">delete</span></button>
     </li>`;
-  
-    if (todo.completed) {
+      
+    if (todo.completed) { // checks if the task is complete or not
       completedTodosHtml += todoHtml;
     } else {
       incompleteTodosHtml += todoHtml;
@@ -239,6 +240,7 @@ function render() {
   document.getElementById('current-list-todos').innerHTML = incompleteTodosHtml;
   document.getElementById('completed-todos').innerHTML = completedTodosHtml;
 
+  // Adds drag and drop Funcitonality
   new Sortable(document.getElementById('list'), {
     animation: 150,
     ghostClass: "sortable-ghost",
@@ -255,14 +257,3 @@ function render() {
     }
   })
 }
-
-document.getElementById("todo-add-box").addEventListener("keypress", function(event) {
-  if (event.key === "Enter") {
-    event.preventDefault(); // Prevent form submission if inside a form
-    const text = event.target.value.trim();
-    if (text) {
-      listManager.addTodo(text);
-      event.target.value = ""; // Clear input field after adding
-    }
-  }
-});
