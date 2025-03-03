@@ -28,16 +28,6 @@ class ListManager {
     render();
   }
 
-  editList(index, newText) {
-    if (!this.activeListId || !newText.trim()) return;
-
-    this.lists[this.activeListId].todos[index].text = newText.trim();
-
-    this.saveToLocalStorage;
-
-    render();
-  }
-
   deleteList(listId) {
     if (!this.lists[listId]) return;
 
@@ -57,7 +47,7 @@ class ListManager {
     const listEntries = Object.entries(this.lists);
     const [movedItem] = listEntries.splice(oldIndex, 1);
     listEntries.splice(newIndex, 0, movedItem);
-  this.lists = Object.fromEntries(listEntries);
+    this.lists = Object.fromEntries(listEntries);
 
     this.saveToLocalStorage();
 
@@ -80,7 +70,7 @@ class ListManager {
 
     this.lists[this.activeListId].todos[index].text = newText.trim();
 
-    this.saveToLocalStorage;
+    this.saveToLocalStorage();
 
     render();
   }
@@ -90,7 +80,22 @@ class ListManager {
     const inputField = document.getElementById(`todo-input-${index}`);
     inputField.classList.remove('d-none');
     inputField.focus();
+
+    // Remove any previous event listener to prevent duplication
+    inputField.removeEventListener("keypress", this.handleEditKeyPress);
+
+    // Define event handler function
+    this.handleEditKeyPress = function(event) {
+      if (event.key === "Enter") {
+        listManager.saveEdit(index);
+      }
+    };
+
+    // Attach event listener
+    inputField.addEventListener("keypress", this.handleEditKeyPress);
+    console.log(newText);
   }
+
 
   saveEdit(index) {
     const inputField = document.getElementById(`todo-input-${index}`);
@@ -142,6 +147,7 @@ class ListManager {
     const todo = this.lists[this.activeListId].todos[index];
     if (todo) {
       todo.completed = !todo.completed;
+
       this.saveToLocalStorage();
       render();
     }
@@ -179,7 +185,7 @@ function render() {
     listsHtml += `
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <span><button class="btn" onclick="listManager.setActiveList('${key}')">${list.name}</button></span>
-        <button class="rounded-2 h-25" onclick="listManager.deleteList('${key}')">-</button>
+        <button class="btn rounded-2 h-25" onclick="listManager.deleteList('${key}')"><span class="material-symbols-outlined">delete</span></button>
       </li>`;
   }
   listsHtml += '</ul>';
@@ -202,25 +208,29 @@ function render() {
 
   currentList.todos.forEach((todo, index) => {
     const completedClass = todo.completed ? 'completed' : '';
+
     let todoHtml = `
     <li class="d-flex justify-content-between align-items-center list-group-item rounded-2 m-2 ${completedClass}">
       <div>
-        <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="listManager.toggleTodo(${index})"> 
-        <span id="todo-text-${index}" ondblclick="listManager.showEditInput(${index})">${todo.text}</span>
+        <input type="checkbox" ${todo.completed ? 'checked' : ''} onclick="listManager.toggleTodo(${index})">
+        <span id="todo-text-${index}" ondblclick="listManager.showEditInput(${index})">
+          ${todo.text}
+        </span>
         <input type="text" id="todo-input-${index}" class="todo-edit-input d-none" 
-          value="${todo.text}" 
+          value="${todo.text.replace(/"/g, '&quot;')}" 
           onblur="listManager.saveEdit(${index})" 
-          onkeypress="if(event.key === 'Enter') listManagersaveEdit(${index})">
+          onkeypress="if(event.key === 'Enter') listManager.saveEdit(${index})">
       </div>
-      <button class="rounded-2" onclick="listManager.removeTodo(${index})">-</button>
+      <button class="btn" onclick="listManager.removeTodo(${index})"><span class="material-symbols-outlined">delete</span></button>
     </li>`;
   
+    if (todo.completed) {
+      completedTodosHtml += todoHtml;
+    } else {
+      incompleteTodosHtml += todoHtml;
+    }
 
-      if (todo.completed) {
-        completedTodosHtml += todoHtml;
-      } else {
-        incompleteTodosHtml += todoHtml;
-      }
+    console.log(`Todo ${index}:`, todo);
   });
 
   incompleteTodosHtml += '</ul>';
@@ -245,3 +255,14 @@ function render() {
     }
   })
 }
+
+document.getElementById("todo-add-box").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault(); // Prevent form submission if inside a form
+    const text = event.target.value.trim();
+    if (text) {
+      listManager.addTodo(text);
+      event.target.value = ""; // Clear input field after adding
+    }
+  }
+});
